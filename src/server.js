@@ -2,12 +2,14 @@ const express = require('express')
 //const koders = require ('./usecases/koders')
 const kodersRouter = require('./routes/koders')
 const mentorsRouter = require('./routes/mentors')
+const authRouter = require('./routes/auth')
 const app = express()
 
 // Sirve para montar un router y otros middlewares
 app.use(express.json())
 app.use('/koders', kodersRouter)
 app.use('/mentors', mentorsRouter)
+app.use('/auth', authRouter)
 
 // Todos los recursos mencionados en las rutas se definen en plural
 /*
