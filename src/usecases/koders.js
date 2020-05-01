@@ -8,8 +8,14 @@ async function getAll () {
   return allKoders
 }
 
-function create (koderData) {
-  return Koder.create(koderData)
+async function create (koderData) {
+  const { email, password } = koderData
+  const koderAlreadyExist = await Koder.findOne({ email })
+
+  if (koderAlreadyExist) throw new Error('This user email already exist')
+  if (password.length < 6) throw new Error('Password must have at least 6 characters')
+  const hash = await bcrypt.hash(password, 10)
+  return Koder.create({ ...koderData, password: hash })
 }
 
 function deleteById (id) {
@@ -47,7 +53,7 @@ async function login (email, password) {
 // koders.getAll()
 
 module.exports = {
-  getAll, // solo devuelve el valor sin ejecutar la función 
+  getAll, // solo devuelve el valor sin ejecutar la función
   create,
   deleteById,
   updateById,

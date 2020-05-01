@@ -1,19 +1,31 @@
 const express = require('express')
 const koders = require('../usecases/koders')
 const router = express.Router()
+const auth = require('../middlewares/auth')
+
+// middleware a nivel de router
+/*
+router.use((request, response, next) => {
+  console.log('middleware koders')
+  next()
+})
+*/
 
 // router que se montara en /koders
 // peticion GET /koders
-router.get('/', async (request, response) => {
+router.get('/', auth, (request, response, next) => {
+  console.log('middleware koders 2')
+  next()
+}, async (request, response) => {
   try {
     const allKoders = await koders.getAll()
     response.json({
       message: 'All koders',
-      data:{
+      data: {
         koders: allKoders
       }
     })
-  } catch {
+  } catch (error) {
     response.status(400)
     response.json({
       success: false,
@@ -23,13 +35,13 @@ router.get('/', async (request, response) => {
 })
 
 // Peticion POST para /koders con try & catch
-router.post('/', async (request, response) => {
+router.post('/', auth, async (request, response) => {
   try {
     const newKoder = await koders.create(request.body)
     response.json({
       success: true,
       message: 'New koder was created',
-      data:{
+      data: {
         koder: newKoder
       }
     })
@@ -43,14 +55,14 @@ router.post('/', async (request, response) => {
 })
 
 // DELETE /koders/:id
-router.delete('/:id', async (request, response) => {
-  try{
-    const {id} = request.params
+router.delete('/:id', auth, async (request, response) => {
+  try {
+    const { id } = request.params
     const koderDeleted = await koders.deleteById(id)
     response.json({
       success: true,
       message: `Koder with id ${id} was deleted`,
-      data:{
+      data: {
         koder: koderDeleted
       }
     })
@@ -64,18 +76,18 @@ router.delete('/:id', async (request, response) => {
 })
 
 // PATCH /koders/:id
-router.patch('/:id', async (request, response) => {
+router.patch('/:id', auth, async (request, response) => {
   try {
-    const {id} = request.params
+    const { id } = request.params
     const koderUpdated = await koders.updateById(id, request.body)
     response.json({
       success: true,
       message: `Koder with id ${id} was updated`,
-      data:{
+      data: {
         koder: koderUpdated
       }
     })
-  } catch(error) {
+  } catch (error) {
     response.status(400)
     response.json({
       success: false,
@@ -91,11 +103,11 @@ router.post('/signup', async (request, response) => {
     response.json({
       success: true,
       message: 'Koder was registered successfully',
-      data:{
+      data: {
         koder: newKoder
       }
     })
-  } catch(error) {
+  } catch (error) {
     response.status(400)
     response.json({
       success: false,

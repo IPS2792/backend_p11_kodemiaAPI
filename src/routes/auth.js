@@ -4,7 +4,7 @@ const router = express.Router()
 
 router.post('/login', async (request, response) => {
   try {
-    const {email, password} = request.body
+    const { email, password } = request.body
     const token = await koders.login(email, password)
 
     response.json({

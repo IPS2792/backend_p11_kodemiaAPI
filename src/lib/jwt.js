@@ -6,7 +6,7 @@ function sign (payload = {}) {
 }
 
 function verify (token = '') {
-  return jwt.verify(token, secret);
+  return jwt.verify(token, secret)
 }
 
 module.exports = {
